@@ -127,6 +127,14 @@
     #define NEWPANEL
   #endif
 
+
+#if defined (SSD1306_OLED_I2C_CONTROLLER)
+    #define DOGLCD
+    #define U8GLIB_SSD1306
+    #define ULTIPANEL
+    #define NEWPANEL
+#endif
+
   /**
    * I2C PANELS
    */

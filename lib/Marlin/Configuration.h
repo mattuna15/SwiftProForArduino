@@ -828,7 +828,6 @@
 //
 //#define HOST_KEEPALIVE_FEATURE        // Disable this if your host doesn't like keepalive messages
 #define DEFAULT_KEEPALIVE_INTERVAL 2  // Number of seconds between "busy" messages. Set with M113.
-
 //
 // M100 Free Memory Watcher
 //
@@ -1008,9 +1007,10 @@
 // IMPORTANT NOTE: The U8glib library is required for Full Graphic Display!
 //                 https://github.com/olikraus/U8glib_Arduino
 //
-#define ULTRA_LCD   // Character based
+//#define ULTRA_LCD   // Character based
 //#define DOGLCD      // Full graphics display
-
+// Tiny SSD1306 OLED I2C 128x64 FULL GRAPHICS CONTROLLER
+#define SSD1306_OLED_I2C_CONTROLLER
 //
 // SD CARD
 //
@@ -1230,7 +1230,7 @@
 
 // Grove controller
 
-#define LCD_GROVE_RGB
+//#define LCD_GROVE_RGB
 
 //
 // PANELOLU2 LCD with status LEDs,
