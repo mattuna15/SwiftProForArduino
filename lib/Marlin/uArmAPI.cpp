@@ -21,6 +21,9 @@ UserMode_t user_mode = USER_MODE_NORMAL;
 static unsigned char mMacStr[MAC_LEN+1] = {0};
 static unsigned char mHWSubVersion;
 
+int fixed_x[3] = {-100, 0, 100};
+int fixed_y[3] = {50, 100, 150 };
+
 /*!
    \brief get mac of bt which as unique code of HW
  */
@@ -489,12 +492,83 @@ float get_height_offset()
 	return height_offset;
 }
 
+float get_height_offset_autolevel(float x, float y)
+{
+    return read_height_offset_autolevel(x,y);
+}
+
 /*!
    \brief get height offset from E2PROM(mm)
  */
 float read_height_offset()
 {
 	return getE2PROMData(EEPROM_ON_CHIP, EEPROM_HEIGHT_ADDR, DATA_TYPE_FLOAT);
+}
+
+float read_height_offset_autolevel(float x, float y)
+{
+    
+    float height = read_height_offset();
+    
+    int col = 0;
+    int row = 0;
+    
+    if (isnan(height) || height > 150 || height < 0)
+    {
+        return DEFAULT_3DPRINT_HEIGHT;
+    }
+    
+    float testCalib = getE2PROMData(EEPROM_ON_CHIP, EEPROM_HEIGHT_ADDR1, DATA_TYPE_FLOAT);
+    if (isnan(testCalib) || testCalib > 150 || testCalib < 0)
+    {
+        return height;
+    }
+    
+    if (x >= fixed_x[0] && x <= fixed_x[1] ) {
+        col = 0;
+    } else if (x > fixed_x[1] && x <= fixed_x[2] ) {
+        col = 1;
+    } else {
+        col = 2;
+    }
+    
+    if (y >= fixed_y[0] && y <= fixed_y[1] ) {
+        row = 0;
+    } else if (y > fixed_y[1] && y <= fixed_y[2] ) {
+        row = 1;
+    } else {
+        row = 2;
+    }
+
+    if (row == 0 && col == 0) {
+        return getE2PROMData(EEPROM_ON_CHIP, EEPROM_HEIGHT_ADDR1, DATA_TYPE_FLOAT);
+    }
+    if (row == 0 && col == 1) {
+        return getE2PROMData(EEPROM_ON_CHIP, EEPROM_HEIGHT_ADDR2, DATA_TYPE_FLOAT);
+    }
+    if (row == 0 && col == 2) {
+        return getE2PROMData(EEPROM_ON_CHIP, EEPROM_HEIGHT_ADDR3, DATA_TYPE_FLOAT);
+    }
+    if (row == 1 && col == 0) {
+        return getE2PROMData(EEPROM_ON_CHIP, EEPROM_HEIGHT_ADDR4, DATA_TYPE_FLOAT);
+    }
+    if (row == 1 && col == 1) {
+        return getE2PROMData(EEPROM_ON_CHIP, EEPROM_HEIGHT_ADDR5, DATA_TYPE_FLOAT);
+    }
+    if (row == 1 && col == 2) {
+        return getE2PROMData(EEPROM_ON_CHIP, EEPROM_HEIGHT_ADDR6, DATA_TYPE_FLOAT);
+    }
+    if (row == 2 && col == 0) {
+        return getE2PROMData(EEPROM_ON_CHIP, EEPROM_HEIGHT_ADDR7, DATA_TYPE_FLOAT);
+    }
+    if (row == 2 && col == 1) {
+        return getE2PROMData(EEPROM_ON_CHIP, EEPROM_HEIGHT_ADDR8, DATA_TYPE_FLOAT);
+    }
+    if (row == 2 && col == 2) {
+        return getE2PROMData(EEPROM_ON_CHIP, EEPROM_HEIGHT_ADDR9, DATA_TYPE_FLOAT);
+    }
+
+    return getE2PROMData(EEPROM_ON_CHIP, EEPROM_HEIGHT_ADDR, DATA_TYPE_FLOAT);
 }
 
 /*!
@@ -652,12 +726,12 @@ void clear_acceleration_flag()
 
 unsigned char getXYZFromAngle(float& x, float& y, float& z, float rot, float left, float right)
 {
-	// 閿熸枻鎷稾Y骞抽敓鏂ゆ嫹閿熼叺闃熷府鎷烽敓鏂ゆ嫹�?	
+	// 閿熸枻鎷稾Y骞抽敓鏂ゆ嫹閿熼叺闃熷府鎷烽敓鏂ゆ嫹�?	
 	
 	
 	double stretch = MATH_LOWER_ARM * cos(left / MATH_TRANS) + MATH_UPPER_ARM * cos(right / MATH_TRANS) + MATH_L2 + front_end_offset;
 
-	// 閿熸枻鎷穁閿熸枻鎷烽敓閰甸槦甯嫹閿熸枻鎷烽�?
+	// 閿熸枻鎷穁閿熸枻鎷烽敓閰甸槦甯嫹閿熸枻鎷烽�?
 	double height = MATH_LOWER_ARM * sin(left / MATH_TRANS) - MATH_UPPER_ARM * sin(right / MATH_TRANS) + MATH_L1;
 	y = -stretch * cos(rot / MATH_TRANS);
 	x = stretch * sin(rot / MATH_TRANS);
@@ -1132,4 +1206,3 @@ bool eeprom_write_test(uint8_t device)
 	
 	return true;
 }
-

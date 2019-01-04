@@ -102,6 +102,7 @@ void set_height_offset(float offset);
    \brief get height end offset(mm)
  */
 float get_height_offset();
+float get_height_offset_autolevel(float x, float y);
 
 unsigned char getXYZFromAngle(float& x, float& y, float& z, float rot, float left, float right);
 
@@ -171,7 +172,7 @@ unsigned char getSwitchState();
    \brief get height offset from E2PROM(mm)
  */
 float read_height_offset();
-
+float read_height_offset_autolevel(float x, float y);
 /*!
    \brief Save height offset to E2PROM(mm)
  */

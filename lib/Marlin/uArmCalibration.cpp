@@ -204,7 +204,8 @@ float get_current_angle(uint8_t index)
 	//debugPrint("angle2 = %f\r\n", angle);
 
 	switch (index)
-	{
+	{
+
 	case X_AXIS:
 		min = 0;
 		max = 180;
@@ -251,7 +252,3 @@ float get_current_angle(uint8_t index)
 
 	//return angle;
 }
-
-
-
-

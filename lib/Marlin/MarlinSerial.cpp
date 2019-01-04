@@ -542,4 +542,3 @@ MarlinSerial customizedSerial;
 #endif
 
 #endif // UARM_SWIFT
-

@@ -858,16 +858,16 @@ void servo_init() {
  *  - Print startup messages and diagnostics
  *  - Get EEPROM or default settings
  *  - Initialize managers for:
- *    â€?temperature
- *    â€?planner
- *    â€?watchdog
- *    â€?stepper
- *    â€?photo pin
- *    â€?servos
- *    â€?LCD controller
- *    â€?Digipot I2C
- *    â€?Z probe sled
- *    â€?status LEDs
+ *    ï¿½?temperature
+ *    ï¿½?planner
+ *    ï¿½?watchdog
+ *    ï¿½?stepper
+ *    ï¿½?photo pin
+ *    ï¿½?servos
+ *    ï¿½?LCD controller
+ *    ï¿½?Digipot I2C
+ *    ï¿½?Z probe sled
+ *    ï¿½?status LEDs
  */
 void setup() {
 
@@ -1811,7 +1811,6 @@ void line_to_destination_angle()
 
 	debugPrint("target: %f, %f, %f\r\n", target[0], target[1], target[2]);
 
-	
 	planner.buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], MMM_TO_MMS_SCALED(feedrate_mm_m), active_extruder);
 
 	getXYZFromAngle(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], target[X_AXIS], target[Y_AXIS], target[Z_AXIS]);
@@ -1838,7 +1837,7 @@ char inverse_kinematics(const float in_cartesian[3], float angle[3]) {
 	float angleLeft = 0;
 	float angleRight = 0;
 
-	z += get_height_offset();
+	z += get_height_offset_autolevel(x,y);
 	
 	zIn = (z - MATH_L1) / MATH_LOWER_ARM;
 
@@ -1978,8 +1977,6 @@ bool line_to_destination_play_mode(float fr_mm_m) {
 
 		if (inverse_kinematics(target, delta_angle) == 0)
 		{
-
-  
 			planner.buffer_line(delta_angle[X_AXIS], delta_angle[Y_AXIS], delta_angle[Z_AXIS], target[E_AXIS], _feedrate_mm_s, active_extruder);
 			return true;
 		}
@@ -3111,7 +3108,7 @@ float get_radius_from_height(float z)
 float get_max_radius_from_height(float destination_z)
 {
 	// 111.70mm
-	float current_z = current_position[Z_AXIS] + get_height_offset();
+	float current_z = current_position[Z_AXIS] + get_height_offset_autolevel(current_position[X_AXIS],current_position[Y_AXIS]);
 
 	float r = 0;
 	float temp_r = 0;
@@ -3160,7 +3157,7 @@ uint8_t routine_valid()
 	if (temp != 0)
 		d = fabs(((edx * sty) - (stx * edy)) / temp);	
 
-	float z = destination[Z_AXIS] + get_height_offset();
+	float z = destination[Z_AXIS] + get_height_offset_autolevel(edx, edy);
 	float r = get_max_radius_from_height(z);
 
 
